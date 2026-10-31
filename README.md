@@ -67,7 +67,7 @@ skills/audit-roc-calibration-figures/
 上传包含 ROC 曲线或校准曲线的图片后输入：
 
 ```text
-请使用 audit-roc-calibration-figures，对这张图进行证据约束型觃读和自检。
+请使用 audit-roc-calibration-figures，对这张图进行证据约束型解读和自检。
 只依据我提供的材料回答；无法辨认或无法确定的信息不要猜测。
 ```
 
