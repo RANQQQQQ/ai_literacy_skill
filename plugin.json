@@ -1,0 +1,18 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "ai-literacy-skill",
+  "version": "0.1.0",
+  "description": "Audit multimodal AI interpretations of ROC and calibration figures with evidence boundaries and a structured self-check.",
+  "author": {
+    "name": "RANQQQQQ"
+  },
+  "homepage": "https://github.com/RANQQQQQ/ai_literacy_skill",
+  "repository": "https://github.com/RANQQQQQ/ai_literacy_skill",
+  "keywords": [
+    "agent-skill",
+    "academic-literacy",
+    "scientific-figures",
+    "roc-curve",
+    "calibration-curve"
+  ]
+}
