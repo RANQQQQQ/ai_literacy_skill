@@ -1,0 +1,8 @@
+{
+  "name": "ai-literacy-skill",
+  "version": "0.1.0",
+  "description": "Audit ROC and calibration figure interpretations using evidence boundaries and a structured self-check.",
+  "author": {
+    "name": "RANQQQQQ"
+  }
+}
