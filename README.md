@@ -1,8 +1,77 @@
-# ROC与校准曲线证据约束型自检Skill
+# ROC 与校准曲线证据约束型自检 Skill
 
-这是一个面向科研图表解读的实验性Agent Skill，当前聚焦于 **ROC曲线** 和 **校准曲线**。
+这是一个可安装的 Agent Skill，用于降低多模态 AI 解读 ROC 曲线和校准曲线时的信息遗漏、数值误读、统计概念混淆、验证集混淆、过度推断和前后矛盾。
 
-它不以“生成更完整的图表解读”为目标，而是要求AI按照固定流程检查：是否遗漏图中信息、是否读错数值和参考线、是否混淆统计概念，以及最终结论是否超过图像能够支持的范围。
+它是纯指令型插件，不执行代码，不联网，也不需要 API Key。安装后，支持 Agent Skills 的智能体可以自动发现并调用它；不支持 Skill 的平台可以使用仓库中的跨平台 Prompt。
+
+## 一键下载
+
+打开仓库页面，选择 **Code → Download ZIP**：
+
+https://github.com/RANQQQQQ/ai_literacy_skill
+
+下载的整个 ZIP 就是安装包。不要只下载 `SKILL.md`，否则 ROC 和校准曲线的专用规则不会随包安装。
+
+## 包结构
+
+```text
+ai_literacy_skill/
+├── plugin.json                         # Agent Plugins 可移植清单
+├── .codex-plugin/plugin.json           # Codex 兼容清单
+├── .claude-plugin/plugin.json          # Claude Code 兼容清单
+├── skills/
+│   └── audit-roc-calibration-figures/
+│       ├── SKILL.md
+│       └── references/
+│           ├── roc.md
+│           └── calibration.md
+└── prompts/
+    └── 跨平台自检Prompt.md
+```
+
+## 安装方式
+
+### 支持“从仓库安装插件”的智能体
+
+在插件或 Skill 设置中选择 **Add from repository / 从仓库添加**，输入：
+
+```text
+https://github.com/RANQQQQQ/ai_literacy_skill
+```
+
+安装后新建对话，再上传图像并要求使用 `audit-roc-calibration-figures`。
+
+### 支持 ZIP 上传的智能体
+
+1. 从 GitHub 下载整个仓库 ZIP；
+2. 在插件、Skills 或扩展页面选择上传 ZIP；
+3. 如果平台要求先解压，请选择解压后包含 `plugin.json` 的顶层文件夹；
+4. 安装后新建对话。
+
+### 只支持 Agent Skills 文件夹的平台
+
+解压 ZIP，将下面这个完整文件夹复制到该平台的 Skills 目录：
+
+```text
+skills/audit-roc-calibration-figures/
+```
+
+必须同时保留 `SKILL.md` 和 `references/`。
+
+### 不支持 Skill 或插件的平台
+
+打开 [`prompts/跨平台自检Prompt.md`](prompts/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E8%87%AA%E6%A3%80Prompt.md)，复制全文作为首条提示词，然后上传图像。这种方式能复用规则，但不属于真正安装。
+
+## 使用示例
+
+上传包含 ROC 曲线或校准曲线的图片后输入：
+
+```text
+请使用 audit-roc-calibration-figures，对这张图进行证据约束型觃读和自检。
+只依据我提供的材料回答；无法辨认或无法确定的信息不要猜测。
+```
+
+可以同时提供图注、正文摘录或原始统计输出。Skill 会区分图像事实、合理解释和当前材料无法确定的信息。
 
 ## 核心流程
 
@@ -10,81 +79,26 @@
 图表类型判断
 → 信息完整性清点
 → 关键数值原样转录
-→ 调用图表专用规则
+→ 调用 ROC / 校准专用规则
 → 证据分级
 → 结论权限检查
 → 前后一致性复核
 → 修正后输出
 ```
 
-主要判断分为：
-
-- **A：直接事实**——图中或用户提供的材料明确显示；
+- **A：直接事实**——图中或用户材料明确显示；
 - **B：合理解释**——由图形关系和统计规则支持；
-- **C：无法确定**——需要图注、正文、原始数据、分析代码或额外检验。
-
-## 目录结构
-
-```text
-skills/audit-roc-calibration-figures/
-├── SKILL.md
-└── references/
-    ├── roc.md
-    └── calibration.md
-
-prompts/
-└── 跨平台自检Prompt.md
-```
-
-## 在Codex中安装
-
-下载仓库后，将完整的Skill文件夹复制到个人Skill目录：
-
-```text
-~/.agents/skills/audit-roc-calibration-figures/
-```
-
-也可以在Codex中调用 `$skill-installer`，要求它从本仓库安装 `skills/audit-roc-calibration-figures`。
-
-如未立即出现，请重启Codex。使用时上传图像并输入：
-
-```text
-$audit-roc-calibration-figures
-请按照Skill流程解读并核验这张图，只依据当前提供的材料回答。
-```
-
-## 在其他多模态AI中使用
-
-如果平台不支持Agent Skills，请复制 `prompts/跨平台自检Prompt.md` 中的提示词，然后上传图片。
-
-为了保证测试条件一致，建议：
-
-1. 每张图使用新对话；
-2. 使用同一版本Prompt；
-3. 保持图片分辨率和输入材料一致；
-4. 不进行追问或人工纠错；
-5. 保存模型名称、版本、日期和完整原始回答。
-
-## 当前能够检查的问题
-
-- 子图、坐标、图例、模型、队列和验证方式遗漏；
-- AUC及置信区间与模型对应错误；
-- 将模糊估读值写成精确数值；
-- 未结合参考线解释ROC或校准曲线；
-- 将AUC混同为准确率；
-- 将数值差异写成统计学显著差异；
-- 混淆校准曲线中的高估和低估方向；
-- 将训练集结果解释为泛化能力；
-- 从区分度或校准表现直接推断临床应用价值；
-- 回答内部的颜色、数值、队列或结论前后矛盾。
+- **C：无法确定**——需要图注、正文、数据、代码或额外检验。
 
 ## 能力边界
 
-- 当前专用规则仅针对ROC曲线和校准曲线；其他图表只能执行通用信息清点。
-- Skill用于降低误读风险，不能保证AI回答必然正确。
-- AI自检不等于独立事实验证，重要结论仍应回到图注、论文正文、原始数据或分析代码核对。
-- 对研究者自己生成的图，精确数值应优先以原始统计输出为准。
+- 专用规则目前只覆盖 ROC 曲线和校准曲线；其他图表只能做通用信息清点。
+- Skill 能降低常见误读风险，但不能保证回答必然正确。
+- AI 自检不等于独立事实验证。正式引用前仍应核对论文正文、原始数据或统计代码。
+- 精确数值应优先以作者的原始统计输出为准，而不是从低分辨率图片估读。
 
-## 项目状态
+## 版本
 
-当前为测试版。后续将通过开发集完善规则，并在独立测试集上比较普通Prompt与自检Skill的信息遗漏率、数值读取准确率、统计概念错误率、过度推断率和内部矛盾率。
+当前版本：`0.1.0`
+
+
